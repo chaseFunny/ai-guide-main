@@ -1,0 +1,43 @@
+name: 构建并部署到腾讯云 COS
+
+on:
+  push:
+    branches: [master] # 可以改为你的主分支名称
+  workflow_dispatch: # 允许手动触发
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 检出代码
+        uses: actions/checkout@v3
+
+      - name: 设置 Node.js 环境
+        uses: actions/setup-node@v3
+        with:
+          node-version: "16" # 根据你的项目需求选择版本
+
+      - name: 安装依赖
+        run: npm install
+
+      - name: 缓存依赖
+        uses: actions/cache@v3
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+
+      - name: 构建
+        run: npm run docs:build
+
+      - name: 部署到腾讯云 COS
+        uses: TencentCloud/cos-action@v1
+        with:
+          secret_id: ${{ secrets.TENCENT_SECRET_ID }}
+          secret_key: ${{ secrets.TENCENT_SECRET_KEY }}
+          cos_bucket: ${{ secrets.COS_BUCKET }}
+          cos_region: ${{ secrets.COS_REGION }}
+          local_path: .vuepress/dist/
+          remote_path: /
+          clean: true # 可选：上传前清空目标路径
