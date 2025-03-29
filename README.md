@@ -2,64 +2,253 @@
 permalink: /
 ---
 
-# 欢迎来到 鱼皮的 AI 知识库！
+## 背景
 
-这是一个完全免费开放的知识共享平台，从 Deepseek 开始，汇总整合目前热门的 AI 工具相关信息，包括产品介绍、使用指南、技巧分享、应用场景、AI 变现、行业资讯、教程资源等一系列内容。涉及的大模型：chatGPT、Deepseek、Deepseek-r1、QWEN、GROK 等等
+如果你有使用 vuepress、vitepress、astro 这种文档网站来作为博客然后通过一些云服务厂商的 cos 服务进行部署的需求，那你会发现每次更新完内容后就会需要手动去打包、然后把打包结果放到 cos 服务对应目录下面，如果你有了解 CI/CD，你肯定会想要通过自动化部署来解决问题，还能避免手动误操作导致问题，本着这个想法，我打算尝试一下
 
-本知识库的资料均来自互联网公开成果及网络资源，通过筛选、整理、分类整合，力求为 AI 爱好者、研究者和从业者提供“一站式”学习入口。通过知识的连接，帮助你快速掌握 AI 技术，成为 AI 专家。
+## 知识点
 
-我们的**愿景**是打破 AI 技术的信息壁垒，让每个人都能平等获取智能时代的工具与认知，利用科技让生活更美好。
+在开发之前，让我们先了解一下 [github action](https://docs.github.com/en/actions/about-github-actions/understanding-github-actions) ，它是一个持续集成和持续交付（`CI/CD`）平台，它的工作原理如下：
 
-> 作者：[程序员鱼皮](https://yuyuanweb.feishu.cn/wiki/Abldw5WkjidySxkKxU2cQdAtnah)
->
-> 更多编程知识学习：[https://codefather.cn](https://codefather.cn)
->
-> 本站地址：[https://ai.codefather.cn](https://ai.codefather.cn)
->
-> 欢迎关注我的公众号：【程序员鱼皮】，随时交流
->
-> ![img](https://pic.yupi.icu/yuyi/1739512392127-5da4baac-bcf8-40fc-83da-68c195853367.png)
+1. 基于事件的触发系统
 
-## 精选文章
+- GitHub Actions 通过仓库中的事件来触发工作流程，例如：
+- 代码推送（push）
+- 拉取请求（pull request）创建
+- 问题（issue）创建
+- 预定的时间（scheduled）
+- 手动触发（workflow_dispatch）
 
-- [2 分钟学会 DeepSeek API，竟然比官方更好用！](/Deepseek/DeepSeek使用指南/2分钟学会%20DeepSeek%20API，竟然比官方更好用！.md)
-- [💗 用 DeepSeek 给对象做个网站，她一定感动坏了](/Deepseek/DeepSeek应用场景/DeepSeek%20+%20编程开发/💗用%20DeepSeek%20给对象做个网站，她一定感动坏了.md)
-- [DeepSeek 本地部署教程](/Deepseek/DeepSeek使用指南/DeepSeek%20本地部署教程.md)
+2. 运行环境（Runner）
 
-## 内容导航
+GitHub Actions 是在服务器上运行的。具体来说：
 
-### [AI 项目教程](/AI项目教程/)
+- GitHub 提供了名为"Runner"的虚拟机环境来执行工作流
+- 官方提供了 Linux（Ubuntu）、Windows 和 macOS 虚拟机
+- 每个 job 都在一个全新的虚拟机实例上独立运行
+- 也可以选择使用自己的服务器作为"自托管运行器"（self-hosted runner）
 
-用 AI 做开发原创项目教程，持续更新！带你快速实战 AI 项目的开发流程，紧跟时代前沿。
+3. 工作流组件
 
-### [关于 DeepSeek](/ai/#关于deepseek)
+GitHub Actions 工作流由以下几个主要部分组成：
 
-当下最火的 AI 工具 DeepSeek 到底是什么？它有哪些核心功能和优势？你了解它的发展历程和创始人团队吗？ 全面了解关于 DeepSeek 的基础知识。
+- 工作流（Workflow）：整个自动化过程的配置
+- 作业（Job）：工作流中的独立单元，可以并行或顺序执行
+- 步骤（Step）：作业中的最小执行单位
+- 动作（Action）：可重用的自动化单元（如 actions/checkout@v3）
 
-### [DeepSeek 使用指南](/ai/#deepseek使用指南)
+4. 执行流程
 
-全面的 DeepSeek 安装、使用指南及技巧，包括新手小白快速上手指南、DeepSeek 提问技巧、官方使用说明、本地部署教程、API 使用指南 等，帮你全面掌握 DeepSeek！
+根据 yaml 配置进行执行我们的流程，下面会讲解
 
-### [DeepSeek 应用场景](/ai/#deepseek应用场景)
+5. 安全凭证管理
 
-DeepSeek 如何赋能普通人的生活和工作？当我们把 DeepSeek 应用于创意设计、工作效率提升、内容创作、编程开发甚至理财等场景，会发生什么？
+GitHub 提供了"Secrets"功能来安全地存储敏感信息（如 API 密钥），可以在工作流中使用如下语法引用。
 
-### [DeepSeek 技术解析](/ai/#deepseek技术解析)
+```yml
+${{ secrets.SECRET_NAME }}
+```
 
-火爆全球的 DeepSeek 采用了哪些技术？有哪些优势和不足？它的模型是怎么训练的？更多关于 DeepSeek 的深度技术解读文章。
+## 开发
 
-### [DeepSeek 资源汇总](/ai/#deepseek资源汇总)
+先梳理一下需求：
 
-汇集了 DeepSeek 官方资源链接、开源项目、pdf 版教程等资源，包括清华大学 DeepSeek 指南第一、二弹，以及各种版本的保姆级 DeepSeek 使用教程。
+我目前希望的流程是当我提交代码更新后，通过 github action 来实现监听文件变化，自动打包、同步到腾讯云 cos 服务
 
-### [DeepSeek 行业资讯](/ai/#deepseek行业资讯)
+### 创建静态网站的存储桶
 
-横空出世的 DeepSeek 对这个世界产生了怎样的影响？未来 AI 行业又将掀起哪些剧变？持续更新 DeepSeek 及 AI 人工智能领域的行业新闻资讯。
+创建，第一步填写好之后，我们下一步，使用默认即可
 
-## [编程产品服务](/产品服务)
+![](https://blog-1304565468.cos.ap-shanghai.myqcloud.com/work/1743174063289-6e1cc234-5300-486d-b169-71d35704baba.png)
 
-鱼皮公司旗下的产品和服务，如算法学习、后端求职突击、前端面试突击、考研陪跑、求职简历工具等。
+配置静态网站
 
-## [作者介绍](/作者)
+![](https://blog-1304565468.cos.ap-shanghai.myqcloud.com/work/1743174285435-dc6924f6-d6ed-463a-b8e6-2d579d262fa2.png)
 
-没啥好说的，感谢您的阅读！
+配置源站：
+
+![](https://blog-1304565468.cos.ap-shanghai.myqcloud.com/work/1743244364851-b4e2290c-b9f5-42c5-a78c-bd74c4c76421.png)
+
+去域名解析添加解析
+
+完成上面的内容后，我们就可以把我们网站内容上传上来了！
+
+### 通过脚本 + github action 实现文件自动上传
+
+```yaml
+name: 构建并部署到腾讯云 COS
+
+on:
+  push:
+    branches: [main] # 可以改为你的主分支名称
+  workflow_dispatch: # 允许手动触发
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 检出代码
+        uses: actions/checkout@v3
+
+      - name: 设置 Node.js 环境
+        uses: actions/setup-node@v3
+        with:
+          node-version: "16" # 根据你的项目需求选择版本
+
+      - name: 安装依赖
+        run: npm install
+
+      - name: 缓存依赖
+        uses: actions/cache@v3
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+
+      - name: 构建
+        run: npm run docs:build
+
+      # 添加这个步骤以设置兼容的 Python 版本
+      - name: 设置 Python 3.10
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.10"
+
+      - name: 安装腾讯云 CLI
+        run: pip install coscmd
+
+      - name: 配置腾讯云 COS 认证
+        run: |
+          coscmd config -a ${{ secrets.TENCENT_SECRET_ID }} -s ${{ secrets.TENCENT_SECRET_KEY }} -b ${{ secrets.COS_BUCKET }} -r ${{ secrets.COS_REGION }}
+
+      - name: 上传到腾讯云 COS
+        run: |
+          coscmd upload -r .vuepress/dist/ /
+      # - name: 部署到腾讯云 COS
+      #   uses: TencentCloud/cos-action@v1
+      #   with:
+      #     secret_id: ${{ secrets.TENCENT_SECRET_ID }}
+      #     secret_key: ${{ secrets.TENCENT_SECRET_KEY }}
+      #     cos_bucket: ${{ secrets.COS_BUCKET }}
+      #     cos_region: ${{ secrets.COS_REGION }}
+      #     local_path: .vuepress/dist/
+      #     remote_path:
+      #     clean: true # 可选：上传前清空目标路径
+```
+
+这里我们使用 腾讯云 CLI 进行文件上传，这里有几个**注意点**：
+
+1. branches 要设置为自己更新的分支名
+2. node-version：node 版本需要看一下是否符合你项目的需求
+3. coscmd upload -r .vuepress/dist/ /
+   1. .vuepress/dist/：代表着你构建产物的路径
+   2. /：你要放到存储桶的对应地址
+
+首选我们去 [https://console.cloud.tencent.com/cam/capi](https://console.cloud.tencent.com/cam/capi?from_column=20423&from=20423) 这里获取我们的 腾讯云 cos 服务需要的 TENCENT_SECRET_ID 和 TENCENT_SECRET_KEY，然后还需要：
+
+- COS_BUCKET：桶名称
+- COS_REGION：桶地区
+
+获取到这些后，我们需要去 github 配置密钥的地方进行配置。
+
+![](https://blog-1304565468.cos.ap-shanghai.myqcloud.com/work/1743240938073-72d13b83-50a6-4f0f-a0e1-9ed25e015d00.png)
+
+填写密钥信息：
+
+![](https://blog-1304565468.cos.ap-shanghai.myqcloud.com/work/1743244868555-a0edb273-7f37-4a6c-ac07-8f1ae2744e34.png)
+
+我们可以进行一次文件上传，然后会去 Actions 下看到：
+
+![](https://blog-1304565468.cos.ap-shanghai.myqcloud.com/work/1743244927055-63d6345a-c42d-4308-94dc-d6c8f85903cf.png)
+
+现在当我们进行文件更新的时候就会自动进行打包部署，但是成功与否是只能回来看 github action 查看，我希望能通过邮件提醒我，继续：
+
+添加脚本：
+
+```javascript
+const nodemailer = require("nodemailer");
+
+// 从命令行参数获取邮箱配置
+const [emailUser, emailPass, toEmail] = process.argv.slice(2);
+const repoName = process.env.GITHUB_REPOSITORY || "未知仓库";
+const runId = process.env.GITHUB_RUN_ID || "未知";
+const runUrl = `https://github.com/${repoName}/actions/runs/${runId}`;
+const branch = process.env.GITHUB_REF_NAME || "main";
+
+async function sendEmail() {
+  // 创建邮件传输器
+  const transporter = nodemailer.createTransport({
+    service: "qq", // 或其他服务，如 'gmail', '163' 等
+    auth: {
+      user: emailUser,
+      pass: emailPass, // QQ 邮箱需要使用授权码而非密码
+    },
+  });
+
+  // 设置邮件内容
+  const mailOptions = {
+    from: emailUser,
+    to: toEmail,
+    subject: `【构建通知】AI 知识库已成功部署 - ${new Date().toLocaleString()}`,
+    html: `
+      <div style="font-family: Arial, sans-serif; padding: 20px; max-width: 600px; margin: 0 auto; border: 1px solid #eee; border-radius: 5px;">
+        <h2 style="color: #18b566;">✅ 部署成功通知</h2>
+        <p>您的 <strong>AI 知识库</strong> 网站已成功构建并部署到腾讯云 COS！</p>
+        <ul style="list-style-type: none; padding-left: 0;">
+          <li><strong>仓库:</strong> ${repoName}</li>
+          <li><strong>分支:</strong> ${branch}</li>
+          <li><strong>部署时间:</strong> ${new Date().toLocaleString()}</li>
+        </ul>
+        <p>
+          <a href="${runUrl}" style="background-color: #1a73e8; color: white; padding: 10px 20px; text-decoration: none; border-radius: 4px; display: inline-block; margin-top: 10px;">
+            查看构建详情
+          </a>
+        </p>
+        <p style="color: #666; font-size: 0.9em; margin-top: 20px;">
+          此邮件由 GitHub Actions 自动发送，请勿回复。
+        </p>
+      </div>
+    `,
+  };
+
+  try {
+    // 发送邮件
+    const info = await transporter.sendMail(mailOptions);
+    console.log("邮件发送成功：", info.messageId);
+    return true;
+  } catch (error) {
+    console.error("邮件发送失败：", error);
+    return false;
+  }
+}
+
+// 执行邮件发送
+sendEmail()
+  .then((success) => process.exit(success ? 0 : 1))
+  .catch((err) => {
+    console.error(err);
+    process.exit(1);
+  });
+```
+
+yaml 配置添加：
+
+```yaml
+        # 新增邮件通知服务
+        - name: 安装 nodemailer
+        if: success() # 仅在上述步骤成功时执行
+        run: npm install nodemailer
+
+      - name: 发送邮件通知
+        if: success() # 仅在上述步骤成功时执行
+        run: node .github/scripts/send-email.js "${{ secrets.EMAIL_USER }}" "${{ secrets.EMAIL_PASS }}" "${{ secrets.EMAIL_TO }}"
+```
+
+最后去 github 添加对应的密钥：
+
+EMAIL_USER: 发件人邮箱地址（如 example@qq.com）
+
+EMAIL_PASS: 邮箱授权码（不是邮箱密码，对于 QQ 邮箱需要在设置中生成授权码）
+
+EMAIL_TO: 收件人邮箱地址

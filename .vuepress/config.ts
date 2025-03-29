@@ -1,42 +1,19 @@
 import { defineConfig } from "vuepress/config";
+import extraSideBar from "./extraSideBar";
+import footer from "./footer";
 import navbar from "./navbar";
 import sidebar from "./sidebar";
-import footer from "./footer";
-import extraSideBar from "./extraSideBar";
 
-const author = "程序员鱼皮";
-const domain = "https://ai.codefather.cn";
-const tags = [
-  "ai",
-  "deepseek",
-  "AI资讯",
-  "人工智能",
-  "AI行业趋势",
-  "AI技术",
-  "AI新闻",
-  "AI动态",
-  "AI市场分析",
-  "AI模型",
-  "AI独家分析",
-  "AI深度解读",
-];
+const author = "luckySnail";
+const domain = "https://test.luckySnail.cn";
 
 export default defineConfig({
-  title: "鱼皮 AI 知识库",
-  description:
-    "鱼皮 AI 知识库 - 免费 DeepSeek 教程｜工具站｜资源库，是一站式开源免费的人工智能知识分享平台，汇集Deepseek、GPT等热门AI工具介绍、使用指南、技巧分享、应用场景、AI变现、行业资讯、教程资源汇总，提供系统化的AI教程、精选AI资源，助你快速掌握AI技术，成为AI专家！",
+  title: "博客部署自动化",
+  description: "使用 腾讯云 COS 服务 CLI + github action 博客部署自动化",
   head: [
     // 站点图标
     ["link", { rel: "icon", href: "/favicon.ico" }],
-    // SEO
-    [
-      "meta",
-      {
-        name: "keywords",
-        content:
-          "ai, deepseek, AI资讯, 人工智能, AI行业趋势, AI技术, AI新闻, AI动态, AI市场分析, AI模型, AI独家分析, AI深度解读",
-      },
-    ],
+
     // 百度统计
     [
       "script",
@@ -77,11 +54,11 @@ export default defineConfig({
     [
       "seo",
       {
-        siteTitle: (_, $site) => $site.title + " - 免费 DeepSeek 教程｜工具站｜资源库",
-        title: ($page) => $page.title + " - 免费 DeepSeek 教程｜工具站｜资源库",
+        siteTitle: (_, $site) => $site.title,
+        title: ($page) => $page.title,
         description: ($page) => $page.frontmatter.description || $page.description,
         author: (_, $site) => $site.themeConfig.author || author,
-        tags: ($page) => $page.frontmatter.tags || tags,
+
         type: ($page) => "article",
         url: (_, $site, path) => ($site.themeConfig.domain || domain || "") + path,
         image: ($page, $site) =>
@@ -100,8 +77,6 @@ export default defineConfig({
     ],
     // https://github.com/IOriens/vuepress-plugin-baidu-autopush
     ["vuepress-plugin-baidu-autopush"],
-    // https://github.com/zq99299/vuepress-plugin/tree/master/vuepress-plugin-tags
-    ["vuepress-plugin-tags"],
     // https://github.com/znicholasbrown/vuepress-plugin-code-copy
     [
       "vuepress-plugin-code-copy",

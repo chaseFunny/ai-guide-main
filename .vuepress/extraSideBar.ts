@@ -31,13 +31,6 @@ export default [
     popoverTitle:
       '<span style="font-size:0.8rem;font-weight:bold;">扫码关注公众号，回复 <span style="color:red;">ai</span> 获取清华大学 DeepSeek 从入门到精通 PDF</span>',
     popoverUrl: "/qrcode-mpcoder_yupi.jpg",
-    popoverDesc: "公众号: 程序员鱼皮",
-  },
-  {
-    title: "支持我",
-    icon: "/icon/dianzan.png",
-    popoverTitle: ' <span style="font-size:0.8rem;font-weight:bold;">鼓励和赞赏我</span>',
-    popoverUrl: "/qrcode-thumb.jpg",
-    popoverDesc: "感谢您的支持，作者头发++",
+    popoverDesc: "公众号：程序员鱼皮",
   },
 ];
