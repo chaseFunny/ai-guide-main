@@ -39,6 +39,6 @@ jobs:
           cos_bucket: ${{ secrets.COS_BUCKET }}
           cos_region: ${{ secrets.COS_REGION }}
           local_path: .vuepress/dist/
-          remote_path: /
+          remote_path:
           clean: true # 可选：上传前清空目标路径
 
